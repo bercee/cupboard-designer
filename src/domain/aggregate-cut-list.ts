@@ -45,6 +45,9 @@ function compareItems(a: CutListItem, b: CutListItem): number {
  *   first and second dimension ascending (panel: length, depth; sheet: height,
  *   width). The order is defined by `MATERIAL_ORDER` / `COMPONENT_ORDER`, not
  *   by locale string comparison.
+ * - Dimensions and quantities are assumed finite (validation guarantees this).
+ *   NaN or Infinity would break the comparator's total order, so ordering
+ *   would no longer be deterministic.
  * - Pure: the input array and its items are not mutated, and every returned
  *   item and dimensions object is freshly created.
  */
