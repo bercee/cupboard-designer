@@ -3,6 +3,7 @@
  * change a carpentry rule; validation and (later) the cut-list engine read
  * from here.
  */
+import type { ComponentType, MaterialId } from "./types";
 
 /** Thickness of the cabinet board used for sides, tops, bottoms and strips. */
 export const BOARD_THICKNESS_MM = 18;
@@ -28,3 +29,25 @@ export const INNER_WIDTH_DEDUCTION_MM = SIDE_PANEL_COUNT * BOARD_THICKNESS_MM;
 /** Total width deducted before splitting between two doors (3 + 3 = 6 mm). */
 export const TWO_DOOR_WIDTH_DEDUCTION_MM =
   DOOR_OUTSIDE_CLEARANCE_MM + DOOR_CENTRE_GAP_MM;
+
+/**
+ * Display labels, centralised so no label string is duplicated in the engine,
+ * tests or (later) the UI. Types are imported for the Record keys only.
+ */
+export const MATERIAL_LABELS: Record<MaterialId, string> = {
+  "cabinet-board-18mm": "18 mm cabinet board",
+  "thin-backing-board": "Thin backing board",
+  "door-material": "Door material",
+};
+
+export const COMPONENT_LABELS: Record<ComponentType, string> = {
+  "side-panel": "Side panel",
+  "top-panel": "Top panel",
+  "bottom-panel": "Bottom panel",
+  "top-support-strip": "Top support strip",
+  "back-panel": "Back panel",
+  door: "Door",
+};
+
+/** Number of top support strips on a base cupboard. */
+export const SUPPORT_STRIP_COUNT = 2;
