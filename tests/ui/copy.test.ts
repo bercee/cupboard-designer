@@ -1,0 +1,159 @@
+// @vitest-environment jsdom
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mountApp } from "../../src/ui/app";
+import type { Order } from "../../src/ui/order-state";
+
+let root: HTMLElement;
+let order: Order;
+
+const wallInput = {
+  name: "Wall-500-Single",
+  heightMm: 600,
+  widthMm: 500,
+  depthMm: 300,
+  type: "wall" as const,
+  doorCount: 1 as const,
+  quantity: 1,
+};
+
+const EXPECTED_TSV = [
+  "Component\tMaterial\tLength (mm)\tWidth (mm)\tQuantity",
+  "Side panel\t18 mm cabinet board\t600\t300\t2",
+  "Top panel\t18 mm cabinet board\t464\t300\t1",
+  "Bottom panel\t18 mm cabinet board\t464\t300\t1",
+  "Back panel\tThin backing board\t600\t500\t1",
+  "Door\tDoor material\t595\t497\t1",
+].join("\n");
+
+const button = () =>
+  root.querySelector<HTMLButtonElement>(".copy-button") as HTMLButtonElement;
+const status = () => root.querySelector(".copy-status") as HTMLElement;
+const alertEl = () => root.querySelector(".copy-error") as HTMLElement;
+const fallback = () =>
+  root.querySelector<HTMLTextAreaElement>(
+    ".copy-fallback textarea",
+  ) as HTMLTextAreaElement;
+const flush = () => new Promise((r) => setTimeout(r, 0));
+
+function setClipboard(value: unknown) {
+  Object.defineProperty(navigator, "clipboard", {
+    value,
+    configurable: true,
+  });
+}
+
+beforeEach(() => {
+  document.body.innerHTML = '<div id="app"></div>';
+  root = document.getElementById("app") as HTMLElement;
+  order = mountApp(root);
+});
+
+afterEach(() => {
+  Reflect.deleteProperty(navigator, "clipboard");
+});
+
+describe("Copy for Excel button", () => {
+  it("is disabled when the list is empty and enabled otherwise", () => {
+    expect(button().textContent).toBe("Copy for Excel");
+    expect(button().disabled).toBe(true);
+    order.add(wallInput);
+    expect(button().disabled).toBe(false);
+    order.remove(order.getDesigns()[0]?.id as string);
+    expect(button().disabled).toBe(true);
+  });
+
+  it("announces success only after writeText resolves, with the exact TSV", async () => {
+    let resolve!: () => void;
+    const writeText = vi.fn(() => new Promise<void>((r) => (resolve = r)));
+    setClipboard({ writeText });
+    order.add(wallInput);
+    button().click();
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(EXPECTED_TSV);
+    expect(status().textContent).toBe("");
+    resolve();
+    await flush();
+    expect(status().textContent).toContain("Copied");
+    expect(alertEl().textContent).toBe("");
+    expect(status().getAttribute("role")).toBe("status");
+    expect(alertEl().getAttribute("role")).toBe("alert");
+  });
+
+  it("shows a failure message and fallback text when writeText rejects", async () => {
+    setClipboard({ writeText: vi.fn(() => Promise.reject(new Error("no"))) });
+    order.add(wallInput);
+    button().click();
+    await flush();
+    expect(status().textContent).toBe("");
+    expect(alertEl().textContent).toContain("blocked or failed");
+    expect(fallback().value).toBe(EXPECTED_TSV);
+    expect(fallback().readOnly).toBe(true);
+    expect(fallback().closest("label")?.hidden).toBe(false);
+  });
+
+  it("handles writeText throwing synchronously", async () => {
+    setClipboard({
+      writeText: () => {
+        throw new Error("sync");
+      },
+    });
+    order.add(wallInput);
+    button().click();
+    await flush();
+    expect(status().textContent).toBe("");
+    expect(alertEl().textContent).not.toBe("");
+  });
+
+  it("shows a failure message when the clipboard API is unavailable", async () => {
+    order.add(wallInput);
+    expect(navigator.clipboard).toBeUndefined();
+    button().click();
+    await flush();
+    expect(status().textContent).toBe("");
+    expect(alertEl().textContent).toContain("not available");
+    expect(fallback().value).toBe(EXPECTED_TSV);
+  });
+
+  it("clears messages when the list changes", async () => {
+    setClipboard({ writeText: vi.fn(() => Promise.resolve()) });
+    order.add(wallInput);
+    button().click();
+    await flush();
+    expect(status().textContent).not.toBe("");
+    order.add({ ...wallInput, name: "Another" });
+    expect(status().textContent).toBe("");
+
+    setClipboard({ writeText: vi.fn(() => Promise.reject(new Error("x"))) });
+    button().click();
+    await flush();
+    expect(alertEl().textContent).not.toBe("");
+    order.remove(order.getDesigns()[0]?.id as string);
+    expect(alertEl().textContent).toBe("");
+    expect(fallback().closest("label")?.hidden).toBe(true);
+  });
+
+  it("ignores a pending copy result after the list changed", async () => {
+    let resolve!: () => void;
+    setClipboard({
+      writeText: vi.fn(() => new Promise<void>((r) => (resolve = r))),
+    });
+    order.add(wallInput);
+    button().click();
+    order.add({ ...wallInput, name: "Another" });
+    resolve();
+    await flush();
+    expect(status().textContent).toBe("");
+  });
+
+  it("copies the current aggregated list after changes", async () => {
+    const writeText = vi.fn<(text: string) => Promise<void>>(() =>
+      Promise.resolve(),
+    );
+    setClipboard({ writeText });
+    order.add(wallInput);
+    order.add({ ...wallInput, name: "Twin" });
+    button().click();
+    expect(writeText.mock.calls[0]?.[0]).toContain(
+      "Side panel\t18 mm cabinet board\t600\t300\t4",
+    );
+  });
+});

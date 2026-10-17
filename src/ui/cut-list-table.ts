@@ -1,3 +1,4 @@
+import { createCopyControl } from "./copy-button";
 import type { CutListItem, PieceDimensions } from "../domain/types";
 
 export interface CutListTable {
@@ -73,11 +74,14 @@ export function createCutListTable(): CutListTable {
   table.append(caption, thead, tbody);
   wrap.append(table);
 
-  section.append(heading, note, empty, wrap);
+  const copy = createCopyControl();
+
+  section.append(heading, note, copy.element, empty, wrap);
 
   return {
     element: section,
     update(items) {
+      copy.update(items);
       empty.hidden = items.length > 0;
       wrap.hidden = items.length === 0;
       tbody.replaceChildren(

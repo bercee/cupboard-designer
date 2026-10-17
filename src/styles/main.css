@@ -235,3 +235,35 @@ th {
     padding: 0.5rem;
   }
 }
+
+.copy-control {
+  margin: 0.75rem 0;
+}
+
+.copy-status {
+  margin: 0.5rem 0 0;
+  color: #14532d;
+}
+
+.copy-error {
+  margin: 0.5rem 0 0;
+  color: var(--error);
+  font-weight: 600;
+}
+
+.copy-status:empty,
+.copy-error:empty {
+  display: none;
+}
+
+.copy-fallback {
+  display: block;
+  margin-top: 0.5rem;
+}
+
+.copy-fallback textarea {
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem;
+  font-family: monospace;
+}
