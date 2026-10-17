@@ -2,6 +2,9 @@
   "name": "kitchen-cupboard-cutlist",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0 || >=26.0.0"
+  },
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -16,13 +19,13 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit \u0026\u0026 vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck \u0026\u0026 npm run lint \u0026\u0026 npm run format:check \u0026\u0026 npm run test"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test"
   }
 }
