@@ -54,3 +54,24 @@ export const COMPONENT_LABELS: Record<ComponentType, string> = {
   "back-panel": "Back panel",
   door: "Door",
 };
+
+/**
+ * Canonical ordering of materials and components for the aggregated order
+ * list. Defined explicitly (not by locale string comparison) so output order
+ * never depends on the runtime locale. Typed as Records so adding a new id
+ * without an order is a compile error.
+ */
+export const MATERIAL_ORDER: Record<MaterialId, number> = {
+  "cabinet-board-18mm": 0,
+  "thin-backing-board": 1,
+  "door-material": 2,
+};
+
+export const COMPONENT_ORDER: Record<ComponentType, number> = {
+  "side-panel": 0,
+  "top-panel": 1,
+  "bottom-panel": 2,
+  "top-support-strip": 3,
+  "back-panel": 4,
+  door: 5,
+};

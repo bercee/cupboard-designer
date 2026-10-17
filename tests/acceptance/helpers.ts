@@ -1,8 +1,8 @@
+import { pieceDimensionsKey } from "../../src/domain/dimensions";
 import type {
   ComponentType,
   CupboardDesign,
   CutListItem,
-  PieceDimensions,
 } from "../../src/domain/types";
 
 export type ExpectedPiece = Omit<CutListItem, "sourceDesignName">;
@@ -22,16 +22,10 @@ export function design(
   };
 }
 
-function dimKey(d: PieceDimensions): string {
-  return d.kind === "panel"
-    ? `panel:${d.lengthMm}x${d.depthMm}`
-    : `sheet:${d.heightMm}x${d.widthMm}`;
-}
-
 /** Stable sort so tests never depend on engine output order. */
 export function sortItems<T extends ExpectedPiece>(items: readonly T[]): T[] {
   const key = (i: T) =>
-    `${i.componentType}|${i.materialId}|${dimKey(i.dimensions)}`;
+    `${i.componentType}|${i.materialId}|${pieceDimensionsKey(i.dimensions)}`;
   return [...items].sort((a, b) => key(a).localeCompare(key(b)));
 }
 
