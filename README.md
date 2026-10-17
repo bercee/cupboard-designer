@@ -93,8 +93,7 @@ server {
     # Vite emits content-hashed file names under /assets, so they can be
     # cached for a long time.
     location /assets/ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
+        add_header Cache-Control "public, max-age=31536000, immutable";
         try_files $uri =404;
     }
 
@@ -125,8 +124,19 @@ npm run build -- --base=/cutlist/
 ```
 
 or set `base: "/cutlist/"` in `defineConfig` in `vite.config.ts`. Then serve the
-contents of `dist/` at that path in Nginx (for example with `alias`, and a
-`try_files` fallback to `/cutlist/index.html`). `npm run build` runs
+contents of `dist/` at that path in Nginx. Prefer a `root`-based layout over
+`alias` (combining `alias` with `try_files` is a known Nginx pitfall): copy the
+build into a `cutlist` folder under the document root, for example
+`/var/www/sites/cutlist/`, and use:
+
+```nginx
+root /var/www/sites;
+location /cutlist/ {
+    try_files $uri $uri/ /cutlist/index.html;
+}
+```
+
+`npm run build` runs
 `tsc --noEmit && vite build`, so arguments after `--` are passed to
 `vite build`.
 
@@ -179,14 +189,16 @@ Decisions and policies:
 - **Dimension display and export convention.** Internally dimensions use named
   fields (`lengthMm`, `depthMm`, `heightMm`, `widthMm`). Panels (sides, top,
   bottom, support strips) are shown as length x depth; doors and back panels as
-  height x width. The table and the export use these as "Length (mm)" and
-  "Width (mm)" columns.
+  height x width. The on-screen table shows a "Size (mm)" column plus a
+  "Size order" column ("length × depth" or "height × width"); the TSV export
+  uses "Length (mm)" and "Width (mm)" columns with the same mapping.
 - **Aggregation.** Pieces merge only when component type, material and
   dimensions (including panel versus door/back kind) are identical; quantities
   are summed. Different materials never merge. The order list is sorted
   deterministically by material (cabinet board, thin backing board, door
   material), then component (side, top, bottom, support strip, back, door), then
-  first and second dimension ascending.
+  piece kind (panels before doors/back panels), then first and second
+  dimension ascending.
 - **TSV export** (`src/domain/export-tsv.ts`): columns are Component, Material,
   Length (mm), Width (mm), Quantity. A header row is always present, even for an
   empty list. Fields are separated by tabs and rows by `\n`, with no trailing
@@ -202,7 +214,6 @@ Decisions and policies:
 ```text
 .github/workflows/ci.yml   CI validation only (no deployment)
 index.html                 Vite entry page
-public/                    Static assets copied as-is
 src/
   main.ts                  Mounts the app
   domain/                  Pure TypeScript, no DOM
