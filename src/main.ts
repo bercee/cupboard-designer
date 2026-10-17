@@ -1,7 +1,8 @@
+import "./styles/main.css";
+import { mountApp } from "./ui/app";
+
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (app) {
-  const heading = document.createElement("h1");
-  heading.textContent = "Kitchen Cupboard Cut-List";
-  app.append(heading);
+  mountApp(app);
 }
