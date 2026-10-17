@@ -76,6 +76,14 @@ describe("generateCutList: formula boundaries", () => {
     expect(only(items, "door").dimensions).toMatchObject({ heightMm: 0.5 });
   });
 
+  it("passes a fractional one-door width through unrounded", () => {
+    const items = generateCutList(design({ name: "f", widthMm: 500.5 }));
+    expect(only(items, "door").dimensions).toMatchObject({ widthMm: 497.5 });
+    expect(only(items, "top-panel").dimensions).toMatchObject({
+      lengthMm: 464.5,
+    });
+  });
+
   it("multiplies quantities by the design quantity", () => {
     const items = generateCutList(
       design({ name: "q", quantity: 7, doorCount: 2, widthMm: 800 }),

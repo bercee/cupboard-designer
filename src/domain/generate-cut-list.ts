@@ -5,6 +5,7 @@ import {
   INNER_WIDTH_DEDUCTION_MM,
   MATERIAL_LABELS,
   SIDE_PANEL_COUNT,
+  SINGLE_PANEL_COUNT,
   SUPPORT_STRIP_COUNT,
   SUPPORT_STRIP_DEPTH_MM,
   TWO_DOOR_WIDTH_DEDUCTION_MM,
@@ -61,9 +62,18 @@ export function generateCutList(design: CupboardDesign): CutListItem[] {
   ];
 
   if (type === "wall") {
-    items.push(make("top-panel", "cabinet-board-18mm", innerPanel(), 1));
+    items.push(
+      make("top-panel", "cabinet-board-18mm", innerPanel(), SINGLE_PANEL_COUNT),
+    );
   }
-  items.push(make("bottom-panel", "cabinet-board-18mm", innerPanel(), 1));
+  items.push(
+    make(
+      "bottom-panel",
+      "cabinet-board-18mm",
+      innerPanel(),
+      SINGLE_PANEL_COUNT,
+    ),
+  );
   if (type === "base") {
     items.push(
       make(
@@ -84,14 +94,14 @@ export function generateCutList(design: CupboardDesign): CutListItem[] {
       "back-panel",
       "thin-backing-board",
       { kind: "sheet", heightMm, widthMm },
-      1,
+      SINGLE_PANEL_COUNT,
     ),
   );
 
   const doorWidthMm =
     doorCount === 1
       ? widthMm - DOOR_OUTSIDE_CLEARANCE_MM
-      : (widthMm - TWO_DOOR_WIDTH_DEDUCTION_MM) / 2;
+      : (widthMm - TWO_DOOR_WIDTH_DEDUCTION_MM) / doorCount;
   items.push(
     make(
       "door",

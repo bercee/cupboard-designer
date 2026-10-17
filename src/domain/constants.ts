@@ -23,6 +23,12 @@ export const DOOR_CENTRE_GAP_MM = 3;
 /** Number of side panels (one on each side) that the inner panels fit between. */
 export const SIDE_PANEL_COUNT = 2;
 
+/** Number of top support strips on a base cupboard. */
+export const SUPPORT_STRIP_COUNT = 2;
+
+/** Per-cupboard count of each of the top, bottom and back panels. */
+export const SINGLE_PANEL_COUNT = 1;
+
 /** Width removed from the overall width to get the inner (between sides) width. */
 export const INNER_WIDTH_DEDUCTION_MM = SIDE_PANEL_COUNT * BOARD_THICKNESS_MM;
 
@@ -48,6 +54,3 @@ export const COMPONENT_LABELS: Record<ComponentType, string> = {
   "back-panel": "Back panel",
   door: "Door",
 };
-
-/** Number of top support strips on a base cupboard. */
-export const SUPPORT_STRIP_COUNT = 2;
