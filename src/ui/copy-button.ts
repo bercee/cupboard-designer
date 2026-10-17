@@ -33,7 +33,6 @@ export function createCopyControl(): CopyControl {
   const status = document.createElement("p");
   status.className = "copy-status";
   status.setAttribute("role", "status");
-  status.setAttribute("aria-live", "polite");
 
   const alert = document.createElement("p");
   alert.className = "copy-error";
@@ -70,6 +69,9 @@ export function createCopyControl(): CopyControl {
     if (current.length === 0) return;
     const tsv = formatCutListAsTsv(current);
     const mine = ++generation;
+    // Cleared synchronously on click; the success text is only set after the
+    // promise resolves (a later task), so the live region visibly changes and
+    // is re-announced on repeated copies.
     clearMessages();
     try {
       const clip =

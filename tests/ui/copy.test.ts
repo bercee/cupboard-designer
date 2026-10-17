@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import css from "../../src/styles/main.css?raw";
 import { mountApp } from "../../src/ui/app";
 import type { Order } from "../../src/ui/order-state";
 
@@ -155,5 +156,50 @@ describe("Copy for Excel button", () => {
     expect(writeText.mock.calls[0]?.[0]).toContain(
       "Side panel\t18 mm cabinet board\t600\t300\t4",
     );
+  });
+});
+
+describe("copy edge cases", () => {
+  it("keeps a stale rejection silent", async () => {
+    let reject!: (e: Error) => void;
+    setClipboard({
+      writeText: vi.fn(() => new Promise<void>((_, r) => (reject = r))),
+    });
+    order.add(wallInput);
+    button().click();
+    order.add({ ...wallInput, name: "Another" });
+    reject(new Error("late"));
+    await flush();
+    expect(alertEl().textContent).toBe("");
+    expect(status().textContent).toBe("");
+    expect(fallback().closest("label")?.hidden).toBe(true);
+  });
+
+  it("shows only the latest result after a double click", async () => {
+    const rejects: Array<(e: Error) => void> = [];
+    const resolves: Array<() => void> = [];
+    let n = 0;
+    setClipboard({
+      writeText: vi.fn(
+        () =>
+          new Promise<void>((res, rej) => {
+            resolves[n] = res;
+            rejects[n] = rej;
+            n += 1;
+          }),
+      ),
+    });
+    order.add(wallInput);
+    button().click();
+    button().click();
+    resolves[1]?.();
+    rejects[0]?.(new Error("first failed late"));
+    await flush();
+    expect(status().textContent).toContain("Copied");
+    expect(alertEl().textContent).toBe("");
+  });
+
+  it("main.css has a [hidden] rule that beats author display rules", () => {
+    expect(css).toMatch(/\[hidden\]\s*\{[^}]*display:\s*none\s*!important/);
   });
 });
