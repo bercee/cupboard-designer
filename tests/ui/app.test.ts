@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from "vitest";
 import { mountApp } from "../../src/ui/app";
+import { parseNumberText } from "../../src/ui/cupboard-form";
 
 let root: HTMLElement;
 
@@ -92,7 +93,7 @@ describe("cupboard UI", () => {
 
     const summary = root.querySelector<HTMLElement>(".error-summary");
     expect(summary?.hidden).toBe(false);
-    expect(summary?.getAttribute("role")).toBe("alert");
+    expect(summary?.textContent).toContain("Cupboard not added");
 
     for (const id of ["name", "heightMm", "widthMm"]) {
       const control = input(id);
@@ -181,5 +182,34 @@ describe("cupboard UI", () => {
     );
     // Selects keep their value too.
     expect(select("type").value).toBe("wall");
+  });
+});
+
+describe("parseNumberText", () => {
+  it("parses plain and padded numbers", () => {
+    expect(parseNumberText(" 500 ")).toBe(500);
+    expect(parseNumberText("1e3")).toBe(1000);
+    expect(parseNumberText("0x10")).toBe(16);
+  });
+  it("returns NaN for empty, blank or comma-decimal text", () => {
+    expect(parseNumberText("")).toBeNaN();
+    expect(parseNumberText("   ")).toBeNaN();
+    expect(parseNumberText("500,5")).toBeNaN();
+  });
+});
+
+describe("failed submit after success", () => {
+  it("keeps the error summary visible and values intact", () => {
+    fill(valid);
+    submit();
+    fill({ name: "Second", heightMm: "", widthMm: "500" });
+    submit();
+    expect(designItems()).toHaveLength(1);
+    expect(root.querySelector<HTMLElement>(".error-summary")?.hidden).toBe(
+      false,
+    );
+    expect(input("name").value).toBe("Second");
+    expect(input("widthMm").value).toBe("500");
+    expect(input("depthMm").value).toBe("300");
   });
 });

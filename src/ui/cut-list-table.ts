@@ -42,8 +42,7 @@ export function createCutListTable(): CutListTable {
 
   const note = document.createElement("p");
   note.className = "field-hint";
-  note.textContent =
-    "Matching pieces from all cupboards are combined. All sizes are in millimetres.";
+  note.textContent = "Matching pieces from all cupboards are combined.";
 
   const empty = document.createElement("p");
   empty.className = "empty-state";
@@ -62,7 +61,7 @@ export function createCutListTable(): CutListTable {
     ["Component", ""],
     ["Material", ""],
     ["Size (mm)", "num"],
-    ["Dimensions", ""],
+    ["Size order", ""],
     ["Quantity", "num"],
   ] as const) {
     const th = cell("th", text, cls);

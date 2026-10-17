@@ -40,7 +40,7 @@ export function createOrder(): Order {
   const notify = () => listeners.forEach((l) => l());
 
   return {
-    getDesigns: () => designs,
+    getDesigns: () => Object.freeze([...designs]),
     getCutList: () =>
       aggregateCutList(designs.flatMap((design) => generateCutList(design))),
     add(input) {

@@ -74,8 +74,6 @@ export function createCupboardForm(
     className: "error-summary",
     id: "cupboard-form-errors",
   });
-  summary.setAttribute("role", "alert");
-  summary.tabIndex = -1;
   summary.hidden = true;
   form.append(summary);
 
@@ -119,6 +117,7 @@ export function createCupboardForm(
   const textInput = (spec: FieldSpec) => {
     const input = el("input");
     input.type = "text";
+    input.maxLength = 100;
     input.autocomplete = "off";
     addField(spec, input);
     return input;
