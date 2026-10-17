@@ -44,10 +44,19 @@ describe("validateCupboardDesign: valid input", () => {
     ).toBe(true);
   });
 
-  it("is deterministic", () => {
-    const a = validateCupboardDesign({ ...valid, widthMm: 10 });
-    const b = validateCupboardDesign({ ...valid, widthMm: 10 });
-    expect(a).toEqual(b);
+  it("is deterministic across repeated calls with varied inputs", () => {
+    const inputs: RawCupboardInput[] = [
+      valid,
+      {},
+      { ...valid, widthMm: 801, doorCount: 2 },
+      { ...valid, name: "  ", quantity: NaN },
+    ];
+    for (const input of inputs) {
+      const first = validateCupboardDesign(input);
+      for (let i = 0; i < 3; i++) {
+        expect(validateCupboardDesign(input)).toEqual(first);
+      }
+    }
   });
 
   it("does not mutate its input", () => {
@@ -210,5 +219,48 @@ describe("multiple errors", () => {
 
   it("reports only the invalid field", () => {
     expect(Object.keys(errorsFor({ depthMm: -1 }))).toEqual(["depthMm"]);
+  });
+});
+
+describe("additional boundaries and messages", () => {
+  it("handles fractional heights around the 5 mm limit", () => {
+    expect(isOk({ heightMm: 5.5 })).toBe(true);
+    expect(isOk({ heightMm: 5.01 })).toBe(true);
+    expect(errorsFor({ heightMm: 5 }).heightMm).toBeDefined();
+  });
+
+  it("accepts width 36.5 with one door", () => {
+    expect(isOk({ widthMm: 36.5, doorCount: 1 })).toBe(true);
+  });
+
+  it("uses exact messages for name and quantity errors", () => {
+    expect(errorsFor({ name: " " }).name).toBe(
+      "Enter a name for the cupboard.",
+    );
+    expect(errorsFor({ quantity: 0 }).quantity).toBe(
+      "Number of cupboards must be a whole number of 1 or more.",
+    );
+  });
+
+  it("rejects quantities beyond the safe integer range", () => {
+    expect(errorsFor({ quantity: 1e21 }).quantity).toBeDefined();
+    expect(errorsFor({ quantity: Number.MAX_SAFE_INTEGER + 1 }).quantity).toBe(
+      "Number of cupboards must be a whole number of 1 or more.",
+    );
+    expect(isOk({ quantity: Number.MAX_SAFE_INTEGER })).toBe(true);
+  });
+
+  it("reports type/doorCount errors together with a width error", () => {
+    const errors = errorsFor({ type: "x", doorCount: 3, widthMm: 36 });
+    expect(Object.keys(errors).sort()).toEqual([
+      "doorCount",
+      "type",
+      "widthMm",
+    ]);
+  });
+
+  it("skips the odd-width two-door check when doorCount is invalid", () => {
+    const errors = errorsFor({ doorCount: 3, widthMm: 801 });
+    expect(Object.keys(errors)).toEqual(["doorCount"]);
   });
 });

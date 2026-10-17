@@ -1,6 +1,9 @@
 /**
  * Domain types. Pure TypeScript, no DOM dependencies.
  *
+ * Note: one-door designs may have fractional overall dimensions, so cut-list
+ * dimensions may be non-integer (only the two-door case is restricted).
+ *
  * Dimension representation (plan section 5.1): dimensions are stored with
  * named fields (`heightMm`, `widthMm`, `depthMm`, `lengthMm`) so a field name
  * always means the same physical axis within a given shape:

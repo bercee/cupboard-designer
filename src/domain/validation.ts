@@ -33,8 +33,13 @@ export interface RawCupboardInput {
  *
  * Duplicate design names are allowed: names are labels, not identifiers.
  *
- * Fractional (non-integer) overall dimensions are allowed, except where the
- * two-door rule below requires a whole-millimetre door width.
+ * ASSUMPTION (list in README): fractional (non-integer) overall dimensions are
+ * allowed, except where the two-door rule requires a whole-millimetre door
+ * width. Cut-list results may therefore be non-integer for one-door designs.
+ * No maximum dimension limits are applied (none are confirmed).
+ *
+ * The two-door fractional-width check is skipped when `doorCount` is invalid,
+ * since it cannot be evaluated; the doorCount error is reported instead.
  */
 export function validateCupboardDesign(
   raw: RawCupboardInput,
@@ -69,7 +74,7 @@ export function validateCupboardDesign(
   let quantity: number | undefined;
   if (
     typeof raw.quantity === "number" &&
-    Number.isInteger(raw.quantity) &&
+    Number.isSafeInteger(raw.quantity) &&
     raw.quantity > 0
   ) {
     quantity = raw.quantity;
