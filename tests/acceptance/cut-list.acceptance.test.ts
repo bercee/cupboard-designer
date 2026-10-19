@@ -163,7 +163,11 @@ describe.each(cases)("acceptance $title", ({ input, expected }) => {
     expect(
       actual.map((i) => [i.materialId, i.materialLabel, i.componentLabel]),
     ).toEqual(
-      want.map((i) => [i.materialId, i.materialLabel, `${input.name} ${i.componentLabel}`]),
+      want.map((i) => [
+        i.materialId,
+        i.materialLabel,
+        `${input.name} ${i.componentLabel}`,
+      ]),
     );
   });
 

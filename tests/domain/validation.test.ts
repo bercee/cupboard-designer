@@ -90,16 +90,18 @@ describe("name", () => {
 describe.each(["heightMm", "widthMm", "depthMm"] as const)(
   "%s basic checks",
   (field) => {
-  it.each([NaN, Infinity, -Infinity, undefined, null, "600", {}])(
-    "rejects non-finite or non-number %j",
-    (value) => {
-      expect(errorsFor({ [field]: value })[field]).toContain("milliméterben megadott szám legyen");
-    },
-  );
+    it.each([NaN, Infinity, -Infinity, undefined, null, "600", {}])(
+      "rejects non-finite or non-number %j",
+      (value) => {
+        expect(errorsFor({ [field]: value })[field]).toContain(
+          "milliméterben megadott szám legyen",
+        );
+      },
+    );
 
-  it.each([0, -1, -100])("rejects zero or negative %j", (value) => {
-    expect(errorsFor({ [field]: value })[field]).toBeDefined();
-  });
+    it.each([0, -1, -100])("rejects zero or negative %j", (value) => {
+      expect(errorsFor({ [field]: value })[field]).toBeDefined();
+    });
   },
 );
 
@@ -231,9 +233,7 @@ describe("additional boundaries and messages", () => {
   });
 
   it("uses exact messages for name and quantity errors", () => {
-    expect(errorsFor({ name: " " }).name).toBe(
-      "Adja meg a szekrény nevét.",
-    );
+    expect(errorsFor({ name: " " }).name).toBe("Adja meg a szekrény nevét.");
     expect(errorsFor({ quantity: 0 }).quantity).toBe(
       "A darabszám legalább 1 egész szám legyen.",
     );
