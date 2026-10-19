@@ -37,7 +37,7 @@ export function generateCutList(design: CupboardDesign): CutListItem[] {
     perCupboard: number,
   ): CutListItem => ({
     componentType,
-    componentLabel: COMPONENT_LABELS[componentType],
+    componentLabel: `${design.name} ${COMPONENT_LABELS[componentType]}`,
     materialId,
     materialLabel: MATERIAL_LABELS[materialId],
     dimensions,

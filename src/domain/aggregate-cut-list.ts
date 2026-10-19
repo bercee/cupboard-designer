@@ -1,5 +1,4 @@
 import {
-  COMPONENT_LABELS,
   COMPONENT_ORDER,
   MATERIAL_LABELS,
   MATERIAL_ORDER,
@@ -55,18 +54,21 @@ export function aggregateCutList(items: CutListItem[]): CutListItem[] {
   const merged = new Map<string, CutListItem>();
 
   for (const item of items) {
-    const key = `${item.materialId}|${item.componentType}|${pieceDimensionsKey(item.dimensions)}`;
+    const key = `${item.sourceDesignName ?? ""}|${item.materialId}|${item.componentType}|${pieceDimensionsKey(item.dimensions)}`;
     const existing = merged.get(key);
     if (existing) {
       existing.quantity += item.quantity;
     } else {
       merged.set(key, {
         componentType: item.componentType,
-        componentLabel: COMPONENT_LABELS[item.componentType],
+        componentLabel: item.componentLabel,
         materialId: item.materialId,
         materialLabel: MATERIAL_LABELS[item.materialId],
         dimensions: { ...item.dimensions },
         quantity: item.quantity,
+        ...(item.sourceDesignName === undefined
+          ? {}
+          : { sourceDesignName: item.sourceDesignName }),
       });
     }
   }

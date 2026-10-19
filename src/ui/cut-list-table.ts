@@ -1,23 +1,10 @@
 import { createCopyControl } from "./copy-button";
-import type { CutListItem, PieceDimensions } from "../domain/types";
+import { exportLengthWidth } from "../domain/export-tsv";
+import type { CutListItem } from "../domain/types";
 
 export interface CutListTable {
   element: HTMLElement;
   update(items: readonly CutListItem[]): void;
-}
-
-/**
- * Display convention (plan section 5.1): panels are length × depth; doors and
- * back panels are height × width. The convention is shown in its own column
- * so every row is unambiguous.
- */
-export function formatDimensions(d: PieceDimensions): {
-  size: string;
-  order: string;
-} {
-  return d.kind === "panel"
-    ? { size: `${d.lengthMm} × ${d.depthMm}`, order: "length × depth" }
-    : { size: `${d.heightMm} × ${d.widthMm}`, order: "height × width" };
 }
 
 function cell(
@@ -61,8 +48,8 @@ export function createCutListTable(): CutListTable {
   for (const [text, cls] of [
     ["Component", ""],
     ["Material", ""],
-    ["Size (mm)", "num"],
-    ["Size order", ""],
+    ["Length (mm)", "num"],
+    ["Width (mm)", "num"],
     ["Quantity", "num"],
   ] as const) {
     const th = cell("th", text, cls);
@@ -86,13 +73,13 @@ export function createCutListTable(): CutListTable {
       wrap.hidden = items.length === 0;
       tbody.replaceChildren(
         ...items.map((item) => {
-          const { size, order } = formatDimensions(item.dimensions);
+          const { length, width } = exportLengthWidth(item.dimensions);
           const row = document.createElement("tr");
           row.append(
             cell("td", item.componentLabel),
             cell("td", item.materialLabel),
-            cell("td", size, "num"),
-            cell("td", order),
+            cell("td", String(length), "num"),
+            cell("td", String(width), "num"),
             cell("td", String(item.quantity), "num"),
           );
           return row;
