@@ -48,27 +48,27 @@ export function validateCupboardDesign(
 
   let name = "";
   if (typeof raw.name !== "string" || raw.name.trim() === "") {
-    errors.name = "Enter a name for the cupboard.";
+    errors.name = "Adja meg a szekrény nevét.";
   } else {
     name = raw.name.trim();
   }
 
-  const heightMm = checkDimension(raw.heightMm, "Height", "heightMm", errors);
-  const widthMm = checkDimension(raw.widthMm, "Width", "widthMm", errors);
-  const depthMm = checkDimension(raw.depthMm, "Depth", "depthMm", errors);
+  const heightMm = checkDimension(raw.heightMm, "Magasság", "heightMm", errors);
+  const widthMm = checkDimension(raw.widthMm, "Szélesség", "widthMm", errors);
+  const depthMm = checkDimension(raw.depthMm, "Mélység", "depthMm", errors);
 
   let type: CupboardType | undefined;
   if (raw.type === "wall" || raw.type === "base") {
     type = raw.type;
   } else {
-    errors.type = "Choose a cupboard type: wall or base.";
+    errors.type = "Válassza ki a szekrény típusát: felső vagy alsó szekrény.";
   }
 
   let doorCount: DoorCount | undefined;
   if (raw.doorCount === 1 || raw.doorCount === 2) {
     doorCount = raw.doorCount;
   } else {
-    errors.doorCount = "Choose the number of doors: 1 or 2.";
+    errors.doorCount = "Válassza ki az ajtók számát: 1 vagy 2.";
   }
 
   let quantity: number | undefined;
@@ -80,22 +80,22 @@ export function validateCupboardDesign(
     quantity = raw.quantity;
   } else {
     errors.quantity =
-      "Number of cupboards must be a whole number of 1 or more.";
+      "A darabszám legalább 1 egész szám legyen.";
   }
 
   // Feasibility rules, applied only when the field is otherwise valid.
   if (heightMm !== undefined && heightMm - DOOR_HEIGHT_CLEARANCE_MM <= 0) {
-    errors.heightMm = `Height must be greater than ${DOOR_HEIGHT_CLEARANCE_MM} mm so the door height is positive.`;
+    errors.heightMm = `A magasság legyen nagyobb ${DOOR_HEIGHT_CLEARANCE_MM} mm-nél, hogy az ajtó magassága pozitív legyen.`;
   }
   if (widthMm !== undefined) {
     if (widthMm - INNER_WIDTH_DEDUCTION_MM <= 0) {
-      errors.widthMm = `Width must be greater than ${INNER_WIDTH_DEDUCTION_MM} mm so the panels between the sides have a positive width.`;
+      errors.widthMm = `A szélesség legyen nagyobb ${INNER_WIDTH_DEDUCTION_MM} mm-nél, hogy az oldallapok közötti lapok szélessége pozitív legyen.`;
     } else if (
       doorCount === 2 &&
       !Number.isInteger((widthMm - TWO_DOOR_WIDTH_DEDUCTION_MM) / 2)
     ) {
       // Provisional policy (plan 5.2): never round silently. Easy to revise.
-      errors.widthMm = `With two doors, (width - ${TWO_DOOR_WIDTH_DEDUCTION_MM}) / 2 must be a whole number of millimetres. Use an even width, or choose one door.`;
+      errors.widthMm = `Két ajtó esetén a (szélesség - ${TWO_DOOR_WIDTH_DEDUCTION_MM}) / 2 értéke egész milliméter legyen. Adjon meg páros szélességet, vagy válasszon egy ajtót.`;
     }
   }
 
@@ -130,11 +130,11 @@ function checkDimension(
   errors: ValidationErrors,
 ): number | undefined {
   if (typeof value !== "number" || !Number.isFinite(value)) {
-    errors[field] = `${label} must be a number in millimetres.`;
+    errors[field] = `A(z) ${label.toLowerCase()} értéke milliméterben megadott szám legyen.`;
     return undefined;
   }
   if (value <= 0) {
-    errors[field] = `${label} must be greater than 0 mm.`;
+    errors[field] = `A(z) ${label.toLowerCase()} legyen nagyobb 0 mm-nél.`;
     return undefined;
   }
   return value;

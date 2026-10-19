@@ -5,14 +5,14 @@ export interface DesignList {
   update(designs: readonly CupboardDesign[]): void;
 }
 
-const TYPE_LABELS = { wall: "Wall cupboard", base: "Base cupboard" } as const;
+const TYPE_LABELS = { wall: "Felső szekrény", base: "Alsó szekrény" } as const;
 
 function describe(design: CupboardDesign): string {
-  const doors = design.doorCount === 1 ? "1 door" : "2 doors";
+  const doors = design.doorCount === 1 ? "1 ajtó" : "2 ajtó";
   return (
     `${TYPE_LABELS[design.type]}, ` +
-    `${design.heightMm} H × ${design.widthMm} W × ${design.depthMm} D mm, ` +
-    `${doors}, quantity ${design.quantity}`
+    `Magasság: ${design.heightMm} mm, szélesség: ${design.widthMm} mm, mélység: ${design.depthMm} mm; ` +
+    `${doors}; darabszám: ${design.quantity}`
   );
 }
 
@@ -24,13 +24,13 @@ export function createDesignList(onRemove: (id: string) => void): DesignList {
 
   const heading = document.createElement("h2");
   heading.id = "design-list-heading";
-  heading.textContent = "Cupboards in this order";
+  heading.textContent = "Megrendelés szekrényei";
   heading.tabIndex = -1;
 
   const empty = document.createElement("p");
   empty.className = "empty-state";
   empty.textContent =
-    "No cupboards added yet. Use the form to add your first cupboard.";
+    "Még nincs szekrény a listán. Az űrlapon adhatja hozzá az elsőt.";
 
   const list = document.createElement("ul");
   list.className = "design-items";
@@ -66,8 +66,8 @@ export function createDesignList(onRemove: (id: string) => void): DesignList {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "secondary";
-          button.textContent = "Remove";
-          button.setAttribute("aria-label", `Remove ${design.name}`);
+          button.textContent = "Eltávolítás";
+          button.setAttribute("aria-label", `„${design.name}” eltávolítása`);
           button.dataset.designId = design.id;
           item.append(info, button);
           return item;

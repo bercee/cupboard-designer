@@ -23,13 +23,13 @@ const FIELD_ORDER: DesignField[] = [
 ];
 
 const FIELD_LABELS: Record<DesignField, string> = {
-  name: "Cupboard name",
-  heightMm: "Height (mm)",
-  widthMm: "Width (mm)",
-  depthMm: "Depth (mm)",
-  type: "Cupboard type",
-  doorCount: "Number of doors",
-  quantity: "Number of identical cupboards",
+  name: "Szekrény neve",
+  heightMm: "Magasság (mm)",
+  widthMm: "Szélesség (mm)",
+  depthMm: "Mélység (mm)",
+  type: "Szekrény típusa",
+  doorCount: "Ajtók száma",
+  quantity: "Darabszám",
 };
 
 /** Convert numeric form text to a number; empty or unparsable text is NaN. */
@@ -66,7 +66,7 @@ export function createCupboardForm(
 
   const heading = el("h2", {
     id: "cupboard-form-heading",
-    textContent: "Add a cupboard",
+    textContent: "Szekrény hozzáadása",
   });
   form.append(heading);
 
@@ -157,17 +157,17 @@ export function createCupboardForm(
     ...(hint ? { hint } : {}),
   });
 
-  const nameInput = textInput(spec("name", "A label for your own reference."));
+  const nameInput = textInput(spec("name", "Tetszőleges név a könnyebb azonosításhoz."));
   const heightInput = numberInput(spec("heightMm"), { min: "1", step: "any" });
   const widthInput = numberInput(spec("widthMm"), { min: "1", step: "any" });
   const depthInput = numberInput(spec("depthMm"), { min: "1", step: "any" });
   const typeSelect = selectInput(spec("type"), [
-    ["wall", "Wall cupboard"],
-    ["base", "Base cupboard"],
+    ["wall", "Felső szekrény"],
+    ["base", "Alsó szekrény"],
   ]);
   const doorSelect = selectInput(spec("doorCount"), [
-    ["1", "1 door"],
-    ["2", "2 symmetrical doors"],
+    ["1", "1 ajtó"],
+    ["2", "2 szimmetrikus ajtó"],
   ]);
   const quantityInput = numberInput(
     spec("quantity"),
@@ -176,7 +176,7 @@ export function createCupboardForm(
   );
   form.append(grid);
 
-  const submit = el("button", { textContent: "Add cupboard" });
+  const submit = el("button", { textContent: "Szekrény hozzáadása" });
   submit.type = "submit";
   const actions = el("div", { className: "form-actions" });
   actions.append(submit);
@@ -212,9 +212,7 @@ export function createCupboardForm(
       return;
     }
     const intro = el("p", {
-      textContent: `Cupboard not added. Please fix ${invalidFields.length} ${
-        invalidFields.length === 1 ? "problem" : "problems"
-      }:`,
+      textContent: `A szekrény nem került a listára. Javítsa az alábbi ${invalidFields.length} hibát:`,
     });
     const list = el("ul");
     for (const field of invalidFields) {
@@ -256,7 +254,7 @@ export function createCupboardForm(
 
     showErrors({});
     onAdd(result.value);
-    status.textContent = `Added "${result.value.name}".`;
+    status.textContent = `„${result.value.name}” hozzáadva.`;
     // Reset only the per-cupboard fields; keep sizes/type/doors because
     // consecutive cupboards are often similar.
     nameInput.value = "";

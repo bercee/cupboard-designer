@@ -35,11 +35,11 @@
 import type { CutListItem, PieceDimensions } from "./types";
 
 export const TSV_HEADER = [
-  "Component",
-  "Material",
-  "Length (mm)",
-  "Width (mm)",
-  "Quantity",
+  "Alkatrész",
+  "Anyag",
+  "Hossz (mm)",
+  "Szélesség (mm)",
+  "Darabszám",
 ] as const;
 
 const FORMULA_PREFIX = /^[=+\-@]/;

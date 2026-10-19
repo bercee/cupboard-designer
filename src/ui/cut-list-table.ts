@@ -26,31 +26,31 @@ export function createCutListTable(): CutListTable {
 
   const heading = document.createElement("h2");
   heading.id = "cut-list-heading";
-  heading.textContent = "Order cut list";
+  heading.textContent = "Megrendelés szabáslistája";
 
   const note = document.createElement("p");
   note.className = "field-hint";
-  note.textContent = "Matching pieces from all cupboards are combined.";
+  note.textContent = "Az azonos méretű és anyagú alkatrészek össze vannak vonva.";
 
   const empty = document.createElement("p");
   empty.className = "empty-state";
   empty.textContent =
-    "The cut list is empty. Add a cupboard to see its pieces.";
+    "A szabáslista üres. Adjon hozzá egy szekrényt az alkatrészek megjelenítéséhez.";
 
   const wrap = document.createElement("div");
   wrap.className = "table-wrap";
   const table = document.createElement("table");
   const caption = document.createElement("caption");
   caption.className = "visually-hidden";
-  caption.textContent = "Combined cut list for all cupboards in the order";
+  caption.textContent = "A megrendelés összes szekrényének összevont szabáslistája";
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
   for (const [text, cls] of [
-    ["Component", ""],
-    ["Material", ""],
-    ["Length (mm)", "num"],
-    ["Width (mm)", "num"],
-    ["Quantity", "num"],
+    ["Alkatrész", ""],
+    ["Anyag", ""],
+    ["Hossz (mm)", "num"],
+    ["Szélesség (mm)", "num"],
+    ["Darabszám", "num"],
   ] as const) {
     const th = cell("th", text, cls);
     th.scope = "col";

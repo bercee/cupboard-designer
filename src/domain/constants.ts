@@ -41,18 +41,18 @@ export const TWO_DOOR_WIDTH_DEDUCTION_MM =
  * tests or (later) the UI. Types are imported for the Record keys only.
  */
 export const MATERIAL_LABELS: Record<MaterialId, string> = {
-  "cabinet-board-18mm": "18 mm cabinet board",
-  "thin-backing-board": "Thin backing board",
-  "door-material": "Door material",
+  "cabinet-board-18mm": "18 mm-es bútorlap",
+  "thin-backing-board": "Hátfal (vékony farostlemez)",
+  "door-material": "Ajtó alapanyaga",
 };
 
 export const COMPONENT_LABELS: Record<ComponentType, string> = {
-  "side-panel": "Side panel",
-  "top-panel": "Top panel",
-  "bottom-panel": "Bottom panel",
-  "top-support-strip": "Top support strip",
-  "back-panel": "Back panel",
-  door: "Door",
+  "side-panel": "Oldallap",
+  "top-panel": "Felső lap",
+  "bottom-panel": "Alsó lap",
+  "top-support-strip": "Merevítő léc",
+  "back-panel": "Hátlap",
+  door: "Ajtó",
 };
 
 /**

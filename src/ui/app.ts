@@ -10,10 +10,10 @@ export function mountApp(root: HTMLElement): Order {
 
   const header = document.createElement("header");
   const title = document.createElement("h1");
-  title.textContent = "Kitchen Cupboard Cut-List";
+  title.textContent = "Konyhaszekrény szabáslista";
   const intro = document.createElement("p");
   intro.textContent =
-    "Add cupboard designs to build an order. All sizes are in millimetres.";
+    "Adja meg a szekrények adatait a megrendelés összeállításához. Minden méret milliméterben értendő.";
   header.append(title, intro);
 
   const formPanel = document.createElement("section");

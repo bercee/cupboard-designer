@@ -8,9 +8,9 @@ export interface CopyControl {
 }
 
 const UNAVAILABLE =
-  "Copying is not available in this browser or connection (the clipboard needs HTTPS or localhost). Select the text below and copy it manually.";
+  "A vágólapra másolás ebben a böngészőben vagy kapcsolaton nem érhető el (HTTPS vagy localhost szükséges). Jelölje ki és másolja ki kézzel az alábbi szöveget.";
 const DENIED =
-  "Copying was blocked or failed. Select the text below and copy it manually.";
+  "A másolás nem sikerült. Jelölje ki és másolja ki kézzel az alábbi szöveget.";
 
 /**
  * "Copy for Excel" button. All TSV formatting is delegated to the domain
@@ -27,7 +27,7 @@ export function createCopyControl(): CopyControl {
   const button = document.createElement("button");
   button.type = "button";
   button.className = "copy-button";
-  button.textContent = "Copy for Excel";
+  button.textContent = "Másolás Excelhez";
   button.disabled = true;
 
   const status = document.createElement("p");
@@ -41,7 +41,7 @@ export function createCopyControl(): CopyControl {
   const fallbackLabel = document.createElement("label");
   fallbackLabel.className = "copy-fallback";
   fallbackLabel.hidden = true;
-  fallbackLabel.textContent = "Tab-separated text to copy manually";
+  fallbackLabel.textContent = "Tabulátorokkal tagolt szöveg kézi másoláshoz";
   const fallback = document.createElement("textarea");
   fallback.readOnly = true;
   fallback.rows = 6;
@@ -83,7 +83,7 @@ export function createCopyControl(): CopyControl {
       await clip.writeText(tsv);
       // Ignore the outcome if the list changed while the write was pending.
       if (mine !== generation) return;
-      status.textContent = "Copied. Paste into Excel with Ctrl+V.";
+      status.textContent = "Másolva. Illessze be az Excelbe a Ctrl+V billentyűkkel.";
     } catch {
       if (mine !== generation) return;
       fail(DENIED, tsv);
