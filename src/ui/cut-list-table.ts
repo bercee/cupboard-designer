@@ -30,7 +30,8 @@ export function createCutListTable(): CutListTable {
 
   const note = document.createElement("p");
   note.className = "field-hint";
-  note.textContent = "Az azonos méretű és anyagú alkatrészek össze vannak vonva.";
+  note.textContent =
+    "Az azonos méretű és anyagú alkatrészek össze vannak vonva.";
 
   const empty = document.createElement("p");
   empty.className = "empty-state";
@@ -42,7 +43,8 @@ export function createCutListTable(): CutListTable {
   const table = document.createElement("table");
   const caption = document.createElement("caption");
   caption.className = "visually-hidden";
-  caption.textContent = "A megrendelés összes szekrényének összevont szabáslistája";
+  caption.textContent =
+    "A megrendelés összes szekrényének összevont szabáslistája";
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
   for (const [text, cls] of [

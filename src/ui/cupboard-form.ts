@@ -157,7 +157,9 @@ export function createCupboardForm(
     ...(hint ? { hint } : {}),
   });
 
-  const nameInput = textInput(spec("name", "Tetszőleges név a könnyebb azonosításhoz."));
+  const nameInput = textInput(
+    spec("name", "Tetszőleges név a könnyebb azonosításhoz."),
+  );
   const heightInput = numberInput(spec("heightMm"), { min: "1", step: "any" });
   const widthInput = numberInput(spec("widthMm"), { min: "1", step: "any" });
   const depthInput = numberInput(spec("depthMm"), { min: "1", step: "any" });

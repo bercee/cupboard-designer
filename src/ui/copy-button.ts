@@ -83,7 +83,8 @@ export function createCopyControl(): CopyControl {
       await clip.writeText(tsv);
       // Ignore the outcome if the list changed while the write was pending.
       if (mine !== generation) return;
-      status.textContent = "Másolva. Illessze be az Excelbe a Ctrl+V billentyűkkel.";
+      status.textContent =
+        "Másolva. Illessze be az Excelbe a Ctrl+V billentyűkkel.";
     } catch {
       if (mine !== generation) return;
       fail(DENIED, tsv);

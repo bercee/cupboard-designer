@@ -79,8 +79,7 @@ export function validateCupboardDesign(
   ) {
     quantity = raw.quantity;
   } else {
-    errors.quantity =
-      "A darabszám legalább 1 egész szám legyen.";
+    errors.quantity = "A darabszám legalább 1 egész szám legyen.";
   }
 
   // Feasibility rules, applied only when the field is otherwise valid.
@@ -130,7 +129,8 @@ function checkDimension(
   errors: ValidationErrors,
 ): number | undefined {
   if (typeof value !== "number" || !Number.isFinite(value)) {
-    errors[field] = `A(z) ${label.toLowerCase()} értéke milliméterben megadott szám legyen.`;
+    errors[field] =
+      `A(z) ${label.toLowerCase()} értéke milliméterben megadott szám legyen.`;
     return undefined;
   }
   if (value <= 0) {

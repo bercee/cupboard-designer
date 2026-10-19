@@ -1,8 +1,4 @@
-import {
-  COMPONENT_ORDER,
-  MATERIAL_LABELS,
-  MATERIAL_ORDER,
-} from "./constants";
+import { COMPONENT_ORDER, MATERIAL_LABELS, MATERIAL_ORDER } from "./constants";
 import { pieceDimensionsKey } from "./dimensions";
 import type { CutListItem, PieceDimensions } from "./types";
 

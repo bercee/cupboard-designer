@@ -44,6 +44,7 @@ Starts the Vite development server (by default at http://localhost:5173/).
 | `npm test`             | Run all Vitest tests once                                                |
 | `npm run test:watch`   | Vitest in interactive watch mode                                         |
 | `npm run lint`         | ESLint                                                                   |
+| `npm run format`       | Format supported files with Prettier                                     |
 | `npm run format:check` | Prettier check (does not modify files)                                   |
 | `npm run typecheck`    | TypeScript check without emitting output                                 |
 | `npm run check`        | `typecheck`, `lint`, `format:check` and `test`, in that order            |
