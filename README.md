@@ -36,6 +36,8 @@ Starts the Vite development server (by default at http://localhost:5173/).
 
 ## Test and quality commands
 
+Never commit changes before checking every QA gate: Prettier (`npm run format:check`), linter (`npm run lint`), typecheck (`npm run typecheck`), tests (`npm test`), and production build (`npm run build`).
+
 | Command                | What it does                                                             |
 | ---------------------- | ------------------------------------------------------------------------ |
 | `npm run dev`          | Vite development server                                                  |
