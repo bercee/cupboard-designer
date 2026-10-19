@@ -152,7 +152,9 @@ describe("cupboard UI", () => {
     const rowsBefore = cutRows().length;
 
     root
-      .querySelector<HTMLButtonElement>('button[aria-label="„Base” eltávolítása"]')
+      .querySelector<HTMLButtonElement>(
+        'button[aria-label="„Base” eltávolítása"]',
+      )
       ?.click();
     expect(designItems()).toHaveLength(1);
     expect(designItems()[0]?.textContent).toContain("Wall-500-Single");
@@ -168,15 +170,23 @@ describe("cupboard UI", () => {
     expect(root.textContent).toContain("Még nincs szekrény a listán.");
   });
 
-  it("aggregates identical pieces across designs and quantity", () => {
+  it("keeps parts separate for differently named designs", () => {
     fill(valid);
     submit();
     fill({ ...valid, name: "Again", quantity: "2" });
     submit();
-    expect(cutRows()).toHaveLength(5);
-    const sideRow = cutRows()[0] as HTMLElement;
-    expect(sideRow.textContent).toContain("Oldallap");
-    expect(sideRow.lastElementChild?.textContent).toBe("6");
+    expect(cutRows()).toHaveLength(10);
+    const sideRows = [...cutRows()].filter((row) =>
+      row.textContent?.includes("Oldallap"),
+    );
+    expect(sideRows.map((row) => row.textContent)).toEqual([
+      expect.stringContaining("Wall-500-Single Oldallap"),
+      expect.stringContaining("Again Oldallap"),
+    ]);
+    expect(sideRows.map((row) => row.lastElementChild?.textContent)).toEqual([
+      "2",
+      "4",
+    ]);
   });
 
   it("renders names as text and never creates elements from them", () => {

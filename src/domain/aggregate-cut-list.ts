@@ -26,14 +26,13 @@ function compareItems(a: CutListItem, b: CutListItem): number {
 /**
  * Combine matching pieces across designs into an order list.
  *
- * Items merge only when component type, material id and dimensions (including
- * the panel/sheet kind) are all identical; quantities are summed. Items of
- * different materials never merge, even with equal dimensions.
+ * Items merge only when source design name, component type, material id and
+ * dimensions (including the panel/sheet kind) are all identical; quantities
+ * are summed. This keeps differently labelled cupboards separate for assembly.
  *
- * - `sourceDesignName` is ignored for matching and is omitted from every
- *   output line, because a merged line no longer belongs to a single design.
- * - Labels on output lines come from the canonical label tables for the
- *   component type and material, so output does not depend on input order.
+ * - `sourceDesignName` is retained so production lines stay associated with
+ *   their cupboard. Component labels also include that name.
+ * - Material labels come from the canonical label table for the material.
  * - Ordering is deterministic and independent of input order: material (cabinet
  *   board, thin backing board, door material), then component type (side, top,
  *   bottom, support strip, back, door), then kind (panel before sheet), then

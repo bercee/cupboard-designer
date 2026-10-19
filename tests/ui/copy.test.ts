@@ -145,7 +145,7 @@ describe("Copy for Excel button", () => {
     expect(status().textContent).toBe("");
   });
 
-  it("copies the current aggregated list after changes", async () => {
+  it("keeps differently named cupboards separate in the copied list", async () => {
     const writeText = vi.fn<(text: string) => Promise<void>>(() =>
       Promise.resolve(),
     );
@@ -153,9 +153,11 @@ describe("Copy for Excel button", () => {
     order.add(wallInput);
     order.add({ ...wallInput, name: "Twin" });
     button().click();
-    expect(writeText.mock.calls[0]?.[0]).toContain(
-      "Side panel\t18 mm cabinet board\t600\t300\t4",
+    const copied = writeText.mock.calls[0]?.[0] ?? "";
+    expect(copied).toContain(
+      "Wall-500-Single Oldallap\t18 mm-es bútorlap\t600\t300\t2",
     );
+    expect(copied).toContain("Twin Oldallap\t18 mm-es bútorlap\t600\t300\t2");
   });
 });
 

@@ -42,11 +42,11 @@ const total = (items: CutListItem[]) =>
   items.reduce((n, i) => n + i.quantity, 0);
 
 describe("aggregateCutList", () => {
-  it("merges identical designs' parts and sums quantities", () => {
+  it("merges quantities for designs with the same label", () => {
     const d = design({ name: "A" });
     const out = aggregateCutList([
       ...generateCutList(d),
-      ...generateCutList({ ...d, name: "B", quantity: 2 }),
+      ...generateCutList({ ...d, quantity: 2 }),
     ]);
     expect(out).toHaveLength(5);
     // side(2), top, bottom, back, door -> each x3 total cupboards
@@ -95,23 +95,45 @@ describe("aggregateCutList", () => {
     );
   });
 
-  it("aggregates overlapping dimensions across several designs", () => {
+  it("keeps overlapping dimensions separate across differently named designs", () => {
     const out = aggregateCutList([
       ...generateCutList(design({ name: "1", widthMm: 500 })),
       ...generateCutList(design({ name: "2", widthMm: 500, heightMm: 700 })),
       ...generateCutList(design({ name: "3", widthMm: 600 })),
     ]);
     const find = (t: ComponentType, d: PieceDimensions) =>
-      out.find(
+      out.filter(
         (i) =>
           i.componentType === t &&
           pieceDimensionsKey(i.dimensions) === pieceDimensionsKey(d),
       );
-    expect(find("top-panel", panel(464, 300))?.quantity).toBe(2);
-    expect(find("top-panel", panel(564, 300))?.quantity).toBe(1);
-    expect(find("side-panel", panel(600, 300))?.quantity).toBe(4);
-    expect(find("side-panel", panel(700, 300))?.quantity).toBe(2);
-    expect(find("back-panel", sheet(600, 500))?.quantity).toBe(1);
+    expect(
+      find("top-panel", panel(464, 300)).map((i) => [
+        i.componentLabel,
+        i.quantity,
+      ]),
+    ).toEqual([
+      ["1 Felső lap", 1],
+      ["2 Felső lap", 1],
+    ]);
+    expect(find("top-panel", panel(564, 300)).map((i) => i.quantity)).toEqual([
+      1,
+    ]);
+    expect(
+      find("side-panel", panel(600, 300)).map((i) => [
+        i.componentLabel,
+        i.quantity,
+      ]),
+    ).toEqual([
+      ["1 Oldallap", 2],
+      ["3 Oldallap", 2],
+    ]);
+    expect(find("side-panel", panel(700, 300)).map((i) => i.quantity)).toEqual([
+      2,
+    ]);
+    expect(find("back-panel", sheet(600, 500)).map((i) => i.quantity)).toEqual([
+      1,
+    ]);
   });
 
   it("returns an empty list for an empty list", () => {
@@ -149,14 +171,14 @@ describe("aggregateCutList", () => {
     expect(total(aggregateCutList(input))).toBe(total(input));
   });
 
-  it("omits sourceDesignName on all output lines", () => {
+  it("retains sourceDesignName on output lines", () => {
     const out = aggregateCutList([
       item("door", "door-material", sheet(595, 497), 1, "A"),
       item("door", "door-material", sheet(595, 497), 1, "B"),
       item("door", "door-material", sheet(500, 400), 1, "A"),
     ]);
-    expect(out).toHaveLength(2);
-    for (const i of out) expect("sourceDesignName" in i).toBe(false);
+    expect(out).toHaveLength(3);
+    expect(out.map((i) => i.sourceDesignName)).toEqual(["A", "A", "B"]);
   });
 
   it("orders by material, component, kind, then dimensions, regardless of input order", () => {

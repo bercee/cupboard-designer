@@ -18,7 +18,7 @@ function cell(
   return node;
 }
 
-/** The aggregated order list, shown separately from the design list. */
+/** The per-cupboard production list, shown separately from the design list. */
 export function createCutListTable(): CutListTable {
   const section = document.createElement("section");
   section.className = "panel cut-list";
@@ -26,12 +26,12 @@ export function createCutListTable(): CutListTable {
 
   const heading = document.createElement("h2");
   heading.id = "cut-list-heading";
-  heading.textContent = "Megrendelés szabáslistája";
+  heading.textContent = "Szekrényenkénti szabáslista";
 
   const note = document.createElement("p");
   note.className = "field-hint";
   note.textContent =
-    "Az azonos méretű és anyagú alkatrészek össze vannak vonva.";
+    "Az alkatrész címkéje tartalmazza a szekrény nevét. Eltérő nevű szekrények alkatrészei külön sorban maradnak.";
 
   const empty = document.createElement("p");
   empty.className = "empty-state";
@@ -44,7 +44,7 @@ export function createCutListTable(): CutListTable {
   const caption = document.createElement("caption");
   caption.className = "visually-hidden";
   caption.textContent =
-    "A megrendelés összes szekrényének összevont szabáslistája";
+    "A szekrények alkatrészeinek szabáslistája, szekrényenként címkézve";
   const thead = document.createElement("thead");
   const headRow = document.createElement("tr");
   for (const [text, cls] of [

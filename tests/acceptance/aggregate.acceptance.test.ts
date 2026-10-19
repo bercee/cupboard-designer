@@ -67,7 +67,7 @@ describe("acceptance: combined order of designs A and C", () => {
 });
 
 describe("acceptance: designs deliberately sharing part dimensions", () => {
-  it("merges every part of two identically sized, differently named designs", () => {
+  it("keeps parts from identically sized, differently named designs separate", () => {
     const first = { ...A, id: "1", name: "Left wall unit", quantity: 1 };
     const second = { ...A, id: "2", name: "Right wall unit", quantity: 2 };
     const out = aggregateCutList([
@@ -75,15 +75,20 @@ describe("acceptance: designs deliberately sharing part dimensions", () => {
       ...generateCutList(second),
     ]);
     expect(view(out)).toEqual([
-      ["side-panel", "cabinet-board-18mm", "panel:600x300", 6],
-      ["top-panel", "cabinet-board-18mm", "panel:464x300", 3],
-      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 3],
-      ["back-panel", "thin-backing-board", "sheet:600x500", 3],
-      ["door", "door-material", "sheet:595x497", 3],
+      ["side-panel", "cabinet-board-18mm", "panel:600x300", 2],
+      ["side-panel", "cabinet-board-18mm", "panel:600x300", 4],
+      ["top-panel", "cabinet-board-18mm", "panel:464x300", 1],
+      ["top-panel", "cabinet-board-18mm", "panel:464x300", 2],
+      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 1],
+      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 2],
+      ["back-panel", "thin-backing-board", "sheet:600x500", 1],
+      ["back-panel", "thin-backing-board", "sheet:600x500", 2],
+      ["door", "door-material", "sheet:595x497", 1],
+      ["door", "door-material", "sheet:595x497", 2],
     ]);
   });
 
-  it("merges only the shared parts of two designs of different heights", () => {
+  it("keeps matching parts separate when differently named designs have different heights", () => {
     const tall = { ...A, id: "2", name: "Tall", heightMm: 700 };
     const out = aggregateCutList([
       ...generateCutList(A),
@@ -92,8 +97,10 @@ describe("acceptance: designs deliberately sharing part dimensions", () => {
     expect(view(out)).toEqual([
       ["side-panel", "cabinet-board-18mm", "panel:600x300", 2],
       ["side-panel", "cabinet-board-18mm", "panel:700x300", 2],
-      ["top-panel", "cabinet-board-18mm", "panel:464x300", 2],
-      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 2],
+      ["top-panel", "cabinet-board-18mm", "panel:464x300", 1],
+      ["top-panel", "cabinet-board-18mm", "panel:464x300", 1],
+      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 1],
+      ["bottom-panel", "cabinet-board-18mm", "panel:464x300", 1],
       ["back-panel", "thin-backing-board", "sheet:600x500", 1],
       ["back-panel", "thin-backing-board", "sheet:700x500", 1],
       ["door", "door-material", "sheet:595x497", 1],

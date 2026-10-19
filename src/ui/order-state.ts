@@ -7,9 +7,9 @@ import type {
 } from "../domain/types";
 
 /**
- * The working order: the list of validated designs plus the aggregated cut
- * list derived from them. Holds no DOM references. All calculation is
- * delegated to the domain functions.
+ * The working order: validated designs plus a cut list that preserves
+ * differently named cupboards as separate, labelled production lines. Holds
+ * no DOM references. All calculation is delegated to domain functions.
  */
 export interface Order {
   getDesigns(): readonly CupboardDesign[];
