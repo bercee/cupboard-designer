@@ -52,8 +52,8 @@ const cutRows = () => root.querySelectorAll(".cut-list tbody tr");
 
 describe("cupboard UI", () => {
   it("shows empty states when there are no designs", () => {
-    expect(root.textContent).toContain("No cupboards added yet");
-    expect(root.textContent).toContain("The cut list is empty");
+    expect(root.textContent).toContain("Még nincs szekrény a listán.");
+    expect(root.textContent).toContain("A szabáslista üres.");
     expect(designItems()).toHaveLength(0);
     expect(root.querySelector<HTMLElement>(".table-wrap")?.hidden).toBe(true);
   });
@@ -73,9 +73,23 @@ describe("cupboard UI", () => {
     expect(designItems()).toHaveLength(1);
     expect(designItems()[0]?.textContent).toContain("Wall-500-Single");
     expect(cutRows()).toHaveLength(5);
-    const text = root.querySelector(".cut-list")?.textContent ?? "";
-    expect(text).toContain("464 × 300");
-    expect(text).toContain("595 × 497");
+    const rows = [...cutRows()].map((row) =>
+      [...row.querySelectorAll("td")].map((cell) => cell.textContent),
+    );
+    expect(rows).toContainEqual([
+      "Wall-500-Single Felső lap",
+      "18 mm-es bútorlap",
+      "464",
+      "300",
+      "1",
+    ]);
+    expect(rows).toContainEqual([
+      "Wall-500-Single Ajtó",
+      "Ajtó alapanyaga",
+      "595",
+      "497",
+      "1",
+    ]);
     expect(root.querySelector<HTMLElement>(".empty-state")?.hidden).toBe(true);
     expect(root.querySelector<HTMLElement>(".error-summary")?.hidden).toBe(
       true,
@@ -93,7 +107,7 @@ describe("cupboard UI", () => {
 
     const summary = root.querySelector<HTMLElement>(".error-summary");
     expect(summary?.hidden).toBe(false);
-    expect(summary?.textContent).toContain("Cupboard not added");
+    expect(summary?.textContent).toContain("A szekrény nem került a listára.");
 
     for (const id of ["name", "heightMm", "widthMm"]) {
       const control = input(id);
@@ -138,7 +152,7 @@ describe("cupboard UI", () => {
     const rowsBefore = cutRows().length;
 
     root
-      .querySelector<HTMLButtonElement>('button[aria-label="Remove Base"]')
+      .querySelector<HTMLButtonElement>('button[aria-label="„Base” eltávolítása"]')
       ?.click();
     expect(designItems()).toHaveLength(1);
     expect(designItems()[0]?.textContent).toContain("Wall-500-Single");
@@ -146,12 +160,12 @@ describe("cupboard UI", () => {
 
     root
       .querySelector<HTMLButtonElement>(
-        'button[aria-label="Remove Wall-500-Single"]',
+        'button[aria-label="„Wall-500-Single” eltávolítása"]',
       )
       ?.click();
     expect(designItems()).toHaveLength(0);
     expect(cutRows()).toHaveLength(0);
-    expect(root.textContent).toContain("No cupboards added yet");
+    expect(root.textContent).toContain("Még nincs szekrény a listán.");
   });
 
   it("aggregates identical pieces across designs and quantity", () => {
@@ -161,7 +175,7 @@ describe("cupboard UI", () => {
     submit();
     expect(cutRows()).toHaveLength(5);
     const sideRow = cutRows()[0] as HTMLElement;
-    expect(sideRow.textContent).toContain("Side panel");
+    expect(sideRow.textContent).toContain("Oldallap");
     expect(sideRow.lastElementChild?.textContent).toBe("6");
   });
 

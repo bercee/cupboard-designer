@@ -79,7 +79,7 @@ describe("name", () => {
   });
 
   it.each(["", "   ", "\t\n"])("rejects empty name %j", (name) => {
-    expect(errorsFor({ name }).name).toMatch(/name/i);
+    expect(errorsFor({ name }).name).toMatch(/szekrény nevét/i);
   });
 
   it.each([undefined, null, 5, {}])("rejects non-string name %j", (name) => {
@@ -87,28 +87,25 @@ describe("name", () => {
   });
 });
 
-describe.each([
-  ["heightMm", "Height"],
-  ["widthMm", "Width"],
-  ["depthMm", "Depth"],
-] as const)("%s basic checks", (field, label) => {
+describe.each(["heightMm", "widthMm", "depthMm"] as const)(
+  "%s basic checks",
+  (field) => {
   it.each([NaN, Infinity, -Infinity, undefined, null, "600", {}])(
     "rejects non-finite or non-number %j",
     (value) => {
-      expect(errorsFor({ [field]: value })[field]).toContain(
-        `${label} must be a number`,
-      );
+      expect(errorsFor({ [field]: value })[field]).toContain("milliméterben megadott szám legyen");
     },
   );
 
   it.each([0, -1, -100])("rejects zero or negative %j", (value) => {
     expect(errorsFor({ [field]: value })[field]).toBeDefined();
   });
-});
+  },
+);
 
 describe("depth", () => {
   it("rejects zero with a clear message", () => {
-    expect(errorsFor({ depthMm: 0 }).depthMm).toMatch(/greater than 0/);
+    expect(errorsFor({ depthMm: 0 }).depthMm).toMatch(/nagyobb 0 mm-nél/);
   });
   it("accepts a very small positive depth", () => {
     expect(isOk({ depthMm: 0.5 })).toBe(true);
@@ -117,7 +114,7 @@ describe("depth", () => {
 
 describe("height feasibility (door height = height - 5)", () => {
   it("rejects height 5", () => {
-    expect(errorsFor({ heightMm: 5 }).heightMm).toMatch(/greater than 5 mm/);
+    expect(errorsFor({ heightMm: 5 }).heightMm).toMatch(/nagyobb 5 mm-nél/);
   });
   it("rejects height below 5", () => {
     expect(errorsFor({ heightMm: 3 }).heightMm).toBeDefined();
@@ -129,7 +126,7 @@ describe("height feasibility (door height = height - 5)", () => {
 
 describe("width feasibility (inner width = width - 36)", () => {
   it("rejects width 36", () => {
-    expect(errorsFor({ widthMm: 36 }).widthMm).toMatch(/greater than 36 mm/);
+    expect(errorsFor({ widthMm: 36 }).widthMm).toMatch(/nagyobb 36 mm-nél/);
   });
   it("rejects width below 36", () => {
     expect(errorsFor({ widthMm: 20 }).widthMm).toBeDefined();
@@ -145,8 +142,8 @@ describe("width feasibility (inner width = width - 36)", () => {
 describe("two-door fractional width policy", () => {
   it("rejects odd width with two doors, with a clear message", () => {
     const message = errorsFor({ widthMm: 801, doorCount: 2 }).widthMm;
-    expect(message).toMatch(/whole number/);
-    expect(message).toMatch(/even width|one door/);
+    expect(message).toMatch(/egész milliméter/);
+    expect(message).toMatch(/páros szélességet|egy ajtót/);
   });
   it("accepts even width with two doors", () => {
     expect(isOk({ widthMm: 800, doorCount: 2 })).toBe(true);
@@ -162,7 +159,7 @@ describe("two-door fractional width policy", () => {
   });
   it("reports the 36 mm rule rather than the fractional rule for tiny widths", () => {
     expect(errorsFor({ widthMm: 11, doorCount: 2 }).widthMm).toMatch(
-      /greater than 36 mm/,
+      /nagyobb 36 mm-nél/,
     );
   });
 });
@@ -195,7 +192,7 @@ describe("quantity", () => {
   it.each([0, -1, 1.5, NaN, Infinity, "3", undefined, null])(
     "rejects %j",
     (quantity) => {
-      expect(errorsFor({ quantity }).quantity).toMatch(/whole number/);
+      expect(errorsFor({ quantity }).quantity).toMatch(/egész szám/);
     },
   );
 });
@@ -235,17 +232,17 @@ describe("additional boundaries and messages", () => {
 
   it("uses exact messages for name and quantity errors", () => {
     expect(errorsFor({ name: " " }).name).toBe(
-      "Enter a name for the cupboard.",
+      "Adja meg a szekrény nevét.",
     );
     expect(errorsFor({ quantity: 0 }).quantity).toBe(
-      "Number of cupboards must be a whole number of 1 or more.",
+      "A darabszám legalább 1 egész szám legyen.",
     );
   });
 
   it("rejects quantities beyond the safe integer range", () => {
     expect(errorsFor({ quantity: 1e21 }).quantity).toBeDefined();
     expect(errorsFor({ quantity: Number.MAX_SAFE_INTEGER + 1 }).quantity).toBe(
-      "Number of cupboards must be a whole number of 1 or more.",
+      "A darabszám legalább 1 egész szám legyen.",
     );
     expect(isOk({ quantity: Number.MAX_SAFE_INTEGER })).toBe(true);
   });

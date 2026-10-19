@@ -38,7 +38,9 @@ describe("generateCutList: components per type", () => {
 describe("generateCutList: labels and metadata", () => {
   it("uses the centralised labels", () => {
     for (const item of generateCutList(design({ name: "w", type: "base" }))) {
-      expect(item.componentLabel).toBe(COMPONENT_LABELS[item.componentType]);
+      expect(item.componentLabel).toBe(
+        `w ${COMPONENT_LABELS[item.componentType]}`,
+      );
       expect(item.materialLabel).toBe(MATERIAL_LABELS[item.materialId]);
     }
   });

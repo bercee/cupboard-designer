@@ -9,7 +9,7 @@ import { generateCutList } from "../../src/domain/generate-cut-list";
 import type { CutListItem } from "../../src/domain/types";
 import { design } from "../acceptance/helpers";
 
-const HEADER = "Component\tMaterial\tLength (mm)\tWidth (mm)\tQuantity";
+const HEADER = "Alkatrész\tAnyag\tHossz (mm)\tSzélesség (mm)\tDarabszám";
 
 function tsvFor(...overrides: Parameters<typeof design>[0][]): string {
   const items = overrides.flatMap((o) => generateCutList(design(o)));
@@ -47,11 +47,11 @@ describe("formatCutListAsTsv", () => {
     ).toBe(
       [
         HEADER,
-        "Side panel\t18 mm cabinet board\t600\t300\t2",
-        "Top panel\t18 mm cabinet board\t464\t300\t1",
-        "Bottom panel\t18 mm cabinet board\t464\t300\t1",
-        "Back panel\tThin backing board\t600\t500\t1",
-        "Door\tDoor material\t595\t497\t1",
+        "Wall-500-Single Oldallap\t18 mm-es bútorlap\t600\t300\t2",
+        "Wall-500-Single Felső lap\t18 mm-es bútorlap\t464\t300\t1",
+        "Wall-500-Single Alsó lap\t18 mm-es bútorlap\t464\t300\t1",
+        "Wall-500-Single Hátlap\tHátfal (vékony farostlemez)\t600\t500\t1",
+        "Wall-500-Single Ajtó\tAjtó alapanyaga\t595\t497\t1",
       ].join("\n"),
     );
   });
@@ -70,11 +70,11 @@ describe("formatCutListAsTsv", () => {
     ).toBe(
       [
         HEADER,
-        "Side panel\t18 mm cabinet board\t720\t350\t2",
-        "Top panel\t18 mm cabinet board\t764\t350\t1",
-        "Bottom panel\t18 mm cabinet board\t764\t350\t1",
-        "Back panel\tThin backing board\t720\t800\t1",
-        "Door\tDoor material\t715\t397\t2",
+        "Wall-800-Double Oldallap\t18 mm-es bútorlap\t720\t350\t2",
+        "Wall-800-Double Felső lap\t18 mm-es bútorlap\t764\t350\t1",
+        "Wall-800-Double Alsó lap\t18 mm-es bútorlap\t764\t350\t1",
+        "Wall-800-Double Hátlap\tHátfal (vékony farostlemez)\t720\t800\t1",
+        "Wall-800-Double Ajtó\tAjtó alapanyaga\t715\t397\t2",
       ].join("\n"),
     );
   });
@@ -93,11 +93,11 @@ describe("formatCutListAsTsv", () => {
     ).toBe(
       [
         HEADER,
-        "Side panel\t18 mm cabinet board\t720\t560\t2",
-        "Bottom panel\t18 mm cabinet board\t564\t560\t1",
-        "Top support strip\t18 mm cabinet board\t564\t100\t2",
-        "Back panel\tThin backing board\t720\t600\t1",
-        "Door\tDoor material\t715\t597\t1",
+        "Base-600-Single Oldallap\t18 mm-es bútorlap\t720\t560\t2",
+        "Base-600-Single Alsó lap\t18 mm-es bútorlap\t564\t560\t1",
+        "Base-600-Single Merevítő léc\t18 mm-es bútorlap\t564\t100\t2",
+        "Base-600-Single Hátlap\tHátfal (vékony farostlemez)\t720\t600\t1",
+        "Base-600-Single Ajtó\tAjtó alapanyaga\t715\t597\t1",
       ].join("\n"),
     );
   });
@@ -116,11 +116,11 @@ describe("formatCutListAsTsv", () => {
     ).toBe(
       [
         HEADER,
-        "Side panel\t18 mm cabinet board\t720\t560\t6",
-        "Bottom panel\t18 mm cabinet board\t864\t560\t3",
-        "Top support strip\t18 mm cabinet board\t864\t100\t6",
-        "Back panel\tThin backing board\t720\t900\t3",
-        "Door\tDoor material\t715\t447\t6",
+        "Base-900-Double Oldallap\t18 mm-es bútorlap\t720\t560\t6",
+        "Base-900-Double Alsó lap\t18 mm-es bútorlap\t864\t560\t3",
+        "Base-900-Double Merevítő léc\t18 mm-es bútorlap\t864\t100\t6",
+        "Base-900-Double Hátlap\tHátfal (vékony farostlemez)\t720\t900\t3",
+        "Base-900-Double Ajtó\tAjtó alapanyaga\t715\t447\t6",
       ].join("\n"),
     );
   });
@@ -131,7 +131,7 @@ describe("formatCutListAsTsv", () => {
       item({ componentLabel: "Alpha" }),
     ]);
     expect(out.split("\n").map((r) => r.split("\t")[0])).toEqual([
-      "Component",
+      "Alkatrész",
       "Zed",
       "Alpha",
     ]);

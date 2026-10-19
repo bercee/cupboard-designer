@@ -5,15 +5,15 @@ import type { ExpectedPiece } from "./helpers";
 
 const BOARD = {
   materialId: "cabinet-board-18mm",
-  materialLabel: "18 mm cabinet board",
+  materialLabel: "18 mm-es bútorlap",
 } as const;
 const BACK = {
   materialId: "thin-backing-board",
-  materialLabel: "Thin backing board",
+  materialLabel: "Hátfal (vékony farostlemez)",
 } as const;
 const DOOR = {
   materialId: "door-material",
-  materialLabel: "Door material",
+  materialLabel: "Ajtó alapanyaga",
 } as const;
 
 const panel = (lengthMm: number, depthMm: number) =>
@@ -23,42 +23,42 @@ const sheet = (heightMm: number, widthMm: number) =>
 
 const side = (l: number, d: number, quantity: number): ExpectedPiece => ({
   componentType: "side-panel",
-  componentLabel: "Side panel",
+  componentLabel: "Oldallap",
   ...BOARD,
   dimensions: panel(l, d),
   quantity,
 });
 const top = (l: number, d: number, quantity: number): ExpectedPiece => ({
   componentType: "top-panel",
-  componentLabel: "Top panel",
+  componentLabel: "Felső lap",
   ...BOARD,
   dimensions: panel(l, d),
   quantity,
 });
 const bottom = (l: number, d: number, quantity: number): ExpectedPiece => ({
   componentType: "bottom-panel",
-  componentLabel: "Bottom panel",
+  componentLabel: "Alsó lap",
   ...BOARD,
   dimensions: panel(l, d),
   quantity,
 });
 const strip = (l: number, d: number, quantity: number): ExpectedPiece => ({
   componentType: "top-support-strip",
-  componentLabel: "Top support strip",
+  componentLabel: "Merevítő léc",
   ...BOARD,
   dimensions: panel(l, d),
   quantity,
 });
 const back = (h: number, w: number, quantity: number): ExpectedPiece => ({
   componentType: "back-panel",
-  componentLabel: "Back panel",
+  componentLabel: "Hátlap",
   ...BACK,
   dimensions: sheet(h, w),
   quantity,
 });
 const door = (h: number, w: number, quantity: number): ExpectedPiece => ({
   componentType: "door",
-  componentLabel: "Door",
+  componentLabel: "Ajtó",
   ...DOOR,
   dimensions: sheet(h, w),
   quantity,
@@ -163,7 +163,7 @@ describe.each(cases)("acceptance $title", ({ input, expected }) => {
     expect(
       actual.map((i) => [i.materialId, i.materialLabel, i.componentLabel]),
     ).toEqual(
-      want.map((i) => [i.materialId, i.materialLabel, i.componentLabel]),
+      want.map((i) => [i.materialId, i.materialLabel, `${input.name} ${i.componentLabel}`]),
     );
   });
 

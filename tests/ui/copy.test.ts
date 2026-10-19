@@ -18,12 +18,12 @@ const wallInput = {
 };
 
 const EXPECTED_TSV = [
-  "Component\tMaterial\tLength (mm)\tWidth (mm)\tQuantity",
-  "Side panel\t18 mm cabinet board\t600\t300\t2",
-  "Top panel\t18 mm cabinet board\t464\t300\t1",
-  "Bottom panel\t18 mm cabinet board\t464\t300\t1",
-  "Back panel\tThin backing board\t600\t500\t1",
-  "Door\tDoor material\t595\t497\t1",
+  "Alkatrész\tAnyag\tHossz (mm)\tSzélesség (mm)\tDarabszám",
+  "Wall-500-Single Oldallap\t18 mm-es bútorlap\t600\t300\t2",
+  "Wall-500-Single Felső lap\t18 mm-es bútorlap\t464\t300\t1",
+  "Wall-500-Single Alsó lap\t18 mm-es bútorlap\t464\t300\t1",
+  "Wall-500-Single Hátlap\tHátfal (vékony farostlemez)\t600\t500\t1",
+  "Wall-500-Single Ajtó\tAjtó alapanyaga\t595\t497\t1",
 ].join("\n");
 
 const button = () =>
@@ -55,7 +55,7 @@ afterEach(() => {
 
 describe("Copy for Excel button", () => {
   it("is disabled when the list is empty and enabled otherwise", () => {
-    expect(button().textContent).toBe("Copy for Excel");
+    expect(button().textContent).toBe("Másolás Excelhez");
     expect(button().disabled).toBe(true);
     order.add(wallInput);
     expect(button().disabled).toBe(false);
@@ -73,7 +73,7 @@ describe("Copy for Excel button", () => {
     expect(status().textContent).toBe("");
     resolve();
     await flush();
-    expect(status().textContent).toContain("Copied");
+    expect(status().textContent).toContain("Másolva");
     expect(alertEl().textContent).toBe("");
     expect(status().getAttribute("role")).toBe("status");
     expect(alertEl().getAttribute("role")).toBe("alert");
@@ -85,7 +85,7 @@ describe("Copy for Excel button", () => {
     button().click();
     await flush();
     expect(status().textContent).toBe("");
-    expect(alertEl().textContent).toContain("blocked or failed");
+    expect(alertEl().textContent).toContain("másolás nem sikerült");
     expect(fallback().value).toBe(EXPECTED_TSV);
     expect(fallback().readOnly).toBe(true);
     expect(fallback().closest("label")?.hidden).toBe(false);
@@ -110,7 +110,7 @@ describe("Copy for Excel button", () => {
     button().click();
     await flush();
     expect(status().textContent).toBe("");
-    expect(alertEl().textContent).toContain("not available");
+    expect(alertEl().textContent).toContain("nem érhető el");
     expect(fallback().value).toBe(EXPECTED_TSV);
   });
 
@@ -195,7 +195,7 @@ describe("copy edge cases", () => {
     resolves[1]?.();
     rejects[0]?.(new Error("first failed late"));
     await flush();
-    expect(status().textContent).toContain("Copied");
+    expect(status().textContent).toContain("Másolva");
     expect(alertEl().textContent).toBe("");
   });
 
